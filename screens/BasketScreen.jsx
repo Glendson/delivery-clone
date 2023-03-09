@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from "react-redux"
 import { selectRestaurant } from '../features/restaurantSlice'
-import { removeFromBasket, selectBasketItems } from '../features/basketSlice'
+import { removeFromBasket, selectBasketItems, selectBasketTotal } from '../features/basketSlice'
 import { XCircleIcon } from 'react-native-heroicons/solid'
 import Currency from "react-currency-formatter"
 import { urlFor } from '../sanity'
@@ -13,6 +13,7 @@ const BasketScreen = () => {
     const navigation = useNavigation()
     const restaurant = useSelector(selectRestaurant)
     const items = useSelector(selectBasketItems)
+    const basketTotal = useSelector(selectBasketTotal)
     const dispatch = useDispatch()
 
     const [groupedItemsInBasket, setGroupedItemsInBasket] = useState([])
@@ -82,8 +83,33 @@ const BasketScreen = () => {
                     ))}
                 </ScrollView>
 
-                
+                <View className="p-5 bg-white mt-5 space-y-4">
+                    <View className="flex-row justify-between">
+                        <Text className="text-gray-400">Subtotal</Text>
+                        <Text className="text-gray-400">
+                            <Currency quantity={basketTotal} currency="EUR" />
+                        </Text>
+                    </View>
 
+                    <View className="flex-row justify-between">
+                        <Text className="text-gray-400">Delivery Fee</Text>
+                        <Text className="text-gray-400">
+                            <Currency quantity={5.99} currency="EUR" />
+                        </Text>
+                    </View>
+
+                    <View className="flex-row justify-between">
+                        <Text>Order Total</Text>
+                        <Text className="font-extrabold">
+                            <Currency quantity={basketTotal + 5.99} currency="EUR" />
+                        </Text>
+                    </View>
+
+                    <TouchableOpacity onPress={() => navigation.navigate("PreparingOrderScreen")} className="rounded-lg bg-[#00CCBB] p-4">
+                        <Text className="text-center text-white text-lg font-bold">Place Order</Text>
+                    </TouchableOpacity>
+
+                </View>
             </View>
         </SafeAreaView>
     )
